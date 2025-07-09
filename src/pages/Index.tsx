@@ -18,6 +18,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
@@ -28,31 +46,164 @@ const Index = () => {
     email: "",
     message: "",
   });
+  const [compareList, setCompareList] = useState<number[]>([]);
+  const [filters, setFilters] = useState({
+    priceRange: [20000, 100000],
+    materials: [] as string[],
+    groupsets: [] as string[],
+    categories: [] as string[],
+  });
 
   const bikes = [
     {
       id: 1,
       name: "Горный велосипед Dragon Peak",
-      price: "₽45,000",
+      price: 45000,
+      category: "Горный",
+      material: "Алюминий",
+      groupset: "Shimano Deore",
+      weight: 13.5,
+      speeds: 21,
+      wheelSize: 27.5,
       image: "/img/bb705cf8-946d-4162-a520-ef6c3b3e81f8.jpg",
       description: "Прочный горный велосипед для экстремальных приключений",
-      features: ["Алюминиевая рама", "21 скорость", "Дисковые тормоза"],
+      features: [
+        "Алюминиевая рама",
+        "21 скорость",
+        "Дисковые тормоза",
+        "Амортизатор",
+      ],
+      specs: {
+        frame: "Алюминий 6061",
+        fork: "SR Suntour XCT",
+        brakes: "Дисковые механические",
+        crankset: "Shimano FC-M131",
+      },
     },
     {
       id: 2,
       name: "Городской электробайк Phoenix",
-      price: "₽65,000",
+      price: 65000,
+      category: "Электро",
+      material: "Алюминий",
+      groupset: "Shimano Nexus",
+      weight: 22.0,
+      speeds: 7,
+      wheelSize: 28,
       image: "/img/4667ff1f-babc-4429-977e-6cb57a673c64.jpg",
       description: "Современный электровелосипед для городских поездок",
-      features: ["Электромотор", "Батарея 48V", "Запас хода 60км"],
+      features: [
+        "Электромотор",
+        "Батарея 48V",
+        "Запас хода 60км",
+        "USB зарядка",
+      ],
+      specs: {
+        frame: "Алюминий 6061",
+        motor: "Bafang 350W",
+        battery: "48V 10Ah",
+        display: "LCD дисплей",
+      },
     },
     {
       id: 3,
       name: "Шоссейный велосипед Lightning",
-      price: "₽55,000",
+      price: 55000,
+      category: "Шоссейный",
+      material: "Карбон",
+      groupset: "Shimano 105",
+      weight: 8.5,
+      speeds: 16,
+      wheelSize: 28,
       image: "/img/89ce7207-4332-4456-9ace-ea946e9fbf53.jpg",
       description: "Скоростной велосипед для шоссейных гонок",
-      features: ["Карбоновая рама", "16 скоростей", "Аэродинамический дизайн"],
+      features: [
+        "Карбоновая рама",
+        "16 скоростей",
+        "Аэродинамический дизайн",
+        "Шоссейные покрышки",
+      ],
+      specs: {
+        frame: "Карбон T700",
+        fork: "Карбон",
+        brakes: "Ободные Shimano",
+        crankset: "Shimano FC-R345",
+      },
+    },
+    {
+      id: 4,
+      name: "Гибридный велосипед Urban Mix",
+      price: 38000,
+      category: "Гибрид",
+      material: "Микс",
+      groupset: "Shimano Altus",
+      weight: 11.8,
+      speeds: 24,
+      wheelSize: 28,
+      image: "/img/bb705cf8-946d-4162-a520-ef6c3b3e81f8.jpg",
+      description: "Универсальный велосипед для города и легкого бездорожья",
+      features: [
+        "Микс рама",
+        "24 скорости",
+        "Гибридные покрышки",
+        "Эргономичные грипсы",
+      ],
+      specs: {
+        frame: "Алюминий/Сталь",
+        fork: "Стальная жесткая",
+        brakes: "V-brake",
+        crankset: "Shimano FC-M131",
+      },
+    },
+    {
+      id: 5,
+      name: "Карбоновый шоссейник Pro Race",
+      price: 85000,
+      category: "Шоссейный",
+      material: "Карбон",
+      groupset: "Shimano Ultegra",
+      weight: 7.2,
+      speeds: 22,
+      wheelSize: 28,
+      image: "/img/89ce7207-4332-4456-9ace-ea946e9fbf53.jpg",
+      description: "Профессиональный шоссейный велосипед для спорта",
+      features: [
+        "Карбон T800",
+        "22 скорости",
+        "Аэро руль",
+        "Гоночная геометрия",
+      ],
+      specs: {
+        frame: "Карбон T800",
+        fork: "Карбон аэро",
+        brakes: "Дисковые гидравлические",
+        crankset: "Shimano FC-R6800",
+      },
+    },
+    {
+      id: 6,
+      name: "Алюминиевый MTB Trail",
+      price: 32000,
+      category: "Горный",
+      material: "Алюминий",
+      groupset: "Shimano Acera",
+      weight: 14.2,
+      speeds: 18,
+      wheelSize: 26,
+      image: "/img/bb705cf8-946d-4162-a520-ef6c3b3e81f8.jpg",
+      description: "Надежный горный велосипед для трейлов",
+      features: [
+        "Алюминиевая рама",
+        "18 скоростей",
+        "Передний амортизатор",
+        "Широкие покрышки",
+      ],
+      specs: {
+        frame: "Алюминий 6061",
+        fork: "SR Suntour XCE",
+        brakes: "V-brake",
+        crankset: "Shimano FC-M131",
+      },
     },
   ];
 
@@ -64,16 +215,168 @@ const Index = () => {
     L: "185+ см",
   };
 
+  const materials = ["Алюминий", "Карбон", "Микс"];
+  const groupsets = [
+    "Shimano Deore",
+    "Shimano Nexus",
+    "Shimano 105",
+    "Shimano Altus",
+    "Shimano Ultegra",
+    "Shimano Acera",
+  ];
+  const categories = ["Горный", "Шоссейный", "Электро", "Гибрид"];
+
+  const filteredBikes = bikes.filter((bike) => {
+    const priceInRange =
+      bike.price >= filters.priceRange[0] &&
+      bike.price <= filters.priceRange[1];
+    const materialMatch =
+      filters.materials.length === 0 ||
+      filters.materials.includes(bike.material);
+    const groupsetMatch =
+      filters.groupsets.length === 0 ||
+      filters.groupsets.includes(bike.groupset);
+    const categoryMatch =
+      filters.categories.length === 0 ||
+      filters.categories.includes(bike.category);
+
+    return priceInRange && materialMatch && groupsetMatch && categoryMatch;
+  });
+
+  const handleFilterChange = (filterType: string, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterType]: prev[filterType as keyof typeof prev].includes(value)
+        ? (prev[filterType as keyof typeof prev] as string[]).filter(
+            (item) => item !== value,
+          )
+        : [...(prev[filterType as keyof typeof prev] as string[]), value],
+    }));
+  };
+
+  const handleCompareToggle = (bikeId: number) => {
+    setCompareList((prev) =>
+      prev.includes(bikeId)
+        ? prev.filter((id) => id !== bikeId)
+        : [...prev, bikeId],
+    );
+  };
+
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here would be the actual form submission logic
     alert("Спасибо за заявку! Мы свяжемся с вами в ближайшее время.");
   };
+
+  const compareModalContent =
+    compareList.length > 0 ? (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            className="fixed bottom-4 right-4 bg-[#C41E3A] hover:bg-[#A01729] z-50"
+            disabled={compareList.length === 0}
+          >
+            Сравнить ({compareList.length})
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Сравнение велосипедов</DialogTitle>
+          </DialogHeader>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-32">Параметр</TableHead>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return (
+                      <TableHead key={id} className="min-w-40">
+                        {bike?.name}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="font-medium">Изображение</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return (
+                      <TableCell key={id}>
+                        <img
+                          src={bike?.image}
+                          alt={bike?.name}
+                          className="w-20 h-20 object-cover rounded"
+                        />
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Цена</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return (
+                      <TableCell key={id} className="text-[#C41E3A] font-bold">
+                        ₽{bike?.price.toLocaleString()}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Категория</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return <TableCell key={id}>{bike?.category}</TableCell>;
+                  })}
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Материал</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return <TableCell key={id}>{bike?.material}</TableCell>;
+                  })}
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Групсет</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return <TableCell key={id}>{bike?.groupset}</TableCell>;
+                  })}
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Вес (кг)</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return <TableCell key={id}>{bike?.weight}</TableCell>;
+                  })}
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Скорости</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return <TableCell key={id}>{bike?.speeds}</TableCell>;
+                  })}
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Размер колес</TableCell>
+                  {compareList.map((id) => {
+                    const bike = bikes.find((b) => b.id === id);
+                    return <TableCell key={id}>{bike?.wheelSize}"</TableCell>;
+                  })}
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </DialogContent>
+      </Dialog>
+    ) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b-2 border-[#C41E3A]">
+      <header className="bg-white shadow-sm border-b-2 border-[#C41E3A] sticky top-0 z-40">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -82,26 +385,37 @@ const Index = () => {
                 Chinese Bicycles
               </h1>
             </div>
-            <nav className="hidden md:flex space-x-8">
+            <div className="flex items-center space-x-6">
+              <nav className="hidden md:flex space-x-8">
+                <a
+                  href="#catalog"
+                  className="text-[#1C1C1C] hover:text-[#C41E3A] transition-colors"
+                >
+                  Каталог
+                </a>
+                <a
+                  href="#sizes"
+                  className="text-[#1C1C1C] hover:text-[#C41E3A] transition-colors"
+                >
+                  Размеры
+                </a>
+                <a
+                  href="#contact"
+                  className="text-[#1C1C1C] hover:text-[#C41E3A] transition-colors"
+                >
+                  Заказать
+                </a>
+              </nav>
               <a
-                href="#catalog"
-                className="text-[#1C1C1C] hover:text-[#C41E3A] transition-colors"
+                href="https://t.me/YOUR_TELEGRAM_USERNAME"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 bg-[#C41E3A] text-white px-4 py-2 rounded-lg hover:bg-[#A01729] transition-colors"
               >
-                Каталог
+                <Icon name="MessageCircle" size={20} />
+                <span>Техподдержка</span>
               </a>
-              <a
-                href="#sizes"
-                className="text-[#1C1C1C] hover:text-[#C41E3A] transition-colors"
-              >
-                Размеры
-              </a>
-              <a
-                href="#contact"
-                className="text-[#1C1C1C] hover:text-[#C41E3A] transition-colors"
-              >
-                Заказать
-              </a>
-            </nav>
+            </div>
           </div>
         </div>
       </header>
@@ -119,6 +433,11 @@ const Index = () => {
           <Button
             size="lg"
             className="bg-white text-[#C41E3A] hover:bg-gray-100"
+            onClick={() =>
+              document
+                .getElementById("catalog")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
           >
             Выбрать велосипед
           </Button>
@@ -151,56 +470,249 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Catalog */}
+      {/* Catalog with Filters */}
       <section id="catalog" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h3 className="text-3xl font-bold text-center mb-12 text-[#1C1C1C]">
-            Наши велосипеды
+            Каталог велосипедов
           </h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {bikes.map((bike) => (
-              <Card
-                key={bike.id}
-                className="overflow-hidden hover:shadow-xl transition-shadow"
-              >
-                <div className="aspect-square overflow-hidden">
-                  <img
-                    src={bike.image}
-                    alt={bike.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform"
-                  />
-                </div>
+
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Filters Sidebar */}
+            <div className="lg:w-1/4">
+              <Card className="sticky top-24">
                 <CardHeader>
-                  <CardTitle className="text-xl text-[#1C1C1C]">
-                    {bike.name}
-                  </CardTitle>
-                  <CardDescription>{bike.description}</CardDescription>
+                  <CardTitle className="text-[#C41E3A]">Фильтры</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap gap-2">
-                      {bike.features.map((feature, index) => (
-                        <Badge
-                          key={index}
-                          variant="secondary"
-                          className="bg-[#C41E3A] text-white"
+                <CardContent className="space-y-6">
+                  {/* Price Range */}
+                  <div>
+                    <Label className="text-sm font-medium mb-3 block">
+                      Цена: ₽{filters.priceRange[0].toLocaleString()} - ₽
+                      {filters.priceRange[1].toLocaleString()}
+                    </Label>
+                    <Slider
+                      value={filters.priceRange}
+                      onValueChange={(value) =>
+                        setFilters((prev) => ({ ...prev, priceRange: value }))
+                      }
+                      max={100000}
+                      min={20000}
+                      step={5000}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <Separator />
+
+                  {/* Categories */}
+                  <div>
+                    <Label className="text-sm font-medium mb-3 block">
+                      Категория
+                    </Label>
+                    <div className="space-y-2">
+                      {categories.map((category) => (
+                        <div
+                          key={category}
+                          className="flex items-center space-x-2"
                         >
-                          {feature}
-                        </Badge>
+                          <Checkbox
+                            id={category}
+                            checked={filters.categories.includes(category)}
+                            onCheckedChange={() =>
+                              handleFilterChange("categories", category)
+                            }
+                          />
+                          <Label
+                            htmlFor={category}
+                            className="text-sm cursor-pointer"
+                          >
+                            {category}
+                          </Label>
+                        </div>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-[#C41E3A]">
-                        {bike.price}
-                      </span>
-                      <Button className="bg-[#C41E3A] hover:bg-[#A01729]">
-                        Выбрать
-                      </Button>
+                  </div>
+
+                  <Separator />
+
+                  {/* Materials */}
+                  <div>
+                    <Label className="text-sm font-medium mb-3 block">
+                      Материал рамы
+                    </Label>
+                    <div className="space-y-2">
+                      {materials.map((material) => (
+                        <div
+                          key={material}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={material}
+                            checked={filters.materials.includes(material)}
+                            onCheckedChange={() =>
+                              handleFilterChange("materials", material)
+                            }
+                          />
+                          <Label
+                            htmlFor={material}
+                            className="text-sm cursor-pointer"
+                          >
+                            {material}
+                          </Label>
+                        </div>
+                      ))}
                     </div>
                   </div>
+
+                  <Separator />
+
+                  {/* Groupsets */}
+                  <div>
+                    <Label className="text-sm font-medium mb-3 block">
+                      Групсет
+                    </Label>
+                    <div className="space-y-2">
+                      {groupsets.map((groupset) => (
+                        <div
+                          key={groupset}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={groupset}
+                            checked={filters.groupsets.includes(groupset)}
+                            onCheckedChange={() =>
+                              handleFilterChange("groupsets", groupset)
+                            }
+                          />
+                          <Label
+                            htmlFor={groupset}
+                            className="text-sm cursor-pointer"
+                          >
+                            {groupset}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() =>
+                      setFilters({
+                        priceRange: [20000, 100000],
+                        materials: [],
+                        groupsets: [],
+                        categories: [],
+                      })
+                    }
+                  >
+                    Сбросить фильтры
+                  </Button>
                 </CardContent>
               </Card>
-            ))}
+            </div>
+
+            {/* Products Grid */}
+            <div className="lg:w-3/4">
+              <div className="mb-4 text-sm text-gray-600">
+                Найдено: {filteredBikes.length} из {bikes.length} велосипедов
+              </div>
+
+              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredBikes.map((bike) => (
+                  <Card
+                    key={bike.id}
+                    className="overflow-hidden hover:shadow-xl transition-shadow"
+                  >
+                    <div className="aspect-square overflow-hidden relative">
+                      <img
+                        src={bike.image}
+                        alt={bike.name}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      />
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-[#C41E3A] text-white">
+                          {bike.category}
+                        </Badge>
+                      </div>
+                      <div className="absolute top-2 right-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="bg-white/80 hover:bg-white"
+                          onClick={() => handleCompareToggle(bike.id)}
+                        >
+                          <Icon
+                            name={
+                              compareList.includes(bike.id) ? "Check" : "Plus"
+                            }
+                            size={16}
+                          />
+                        </Button>
+                      </div>
+                    </div>
+                    <CardHeader>
+                      <CardTitle className="text-lg text-[#1C1C1C]">
+                        {bike.name}
+                      </CardTitle>
+                      <CardDescription>{bike.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div>
+                            <span className="text-gray-600">Материал:</span>
+                            <div className="font-medium">{bike.material}</div>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Групсет:</span>
+                            <div className="font-medium">{bike.groupset}</div>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Вес:</span>
+                            <div className="font-medium">{bike.weight} кг</div>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Скорости:</span>
+                            <div className="font-medium">{bike.speeds}</div>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1">
+                          {bike.features.slice(0, 3).map((feature, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {feature}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold text-[#C41E3A]">
+                            ₽{bike.price.toLocaleString()}
+                          </span>
+                          <Button
+                            className="bg-[#C41E3A] hover:bg-[#A01729]"
+                            onClick={() =>
+                              document
+                                .getElementById("contact")
+                                ?.scrollIntoView({ behavior: "smooth" })
+                            }
+                          >
+                            Заказать
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -326,7 +838,7 @@ const Index = () => {
       {/* Delivery Info */}
       <section className="py-16 bg-[#C41E3A] text-white">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div className="grid md:grid-cols-4 gap-8 text-center">
             <div className="space-y-4">
               <Icon name="Truck" size={48} className="mx-auto" />
               <h4 className="text-xl font-bold">Доставка 18-21 день</h4>
@@ -338,9 +850,14 @@ const Index = () => {
               <p>Все велосипеды проходят проверку перед отправкой</p>
             </div>
             <div className="space-y-4">
-              <Icon name="Phone" size={48} className="mx-auto" />
-              <h4 className="text-xl font-bold">Поддержка 24/7</h4>
-              <p>Помощь в выборе и консультации по товару</p>
+              <Icon name="MessageCircle" size={48} className="mx-auto" />
+              <h4 className="text-xl font-bold">Техподдержка в Telegram</h4>
+              <p>Быстрая помощь и консультации</p>
+            </div>
+            <div className="space-y-4">
+              <Icon name="GitCompare" size={48} className="mx-auto" />
+              <h4 className="text-xl font-bold">Сравнение моделей</h4>
+              <p>Выберите лучший велосипед для себя</p>
             </div>
           </div>
         </div>
@@ -364,7 +881,17 @@ const Index = () => {
               <div className="space-y-2 text-gray-400">
                 <p>📧 info@chinese-bikes.ru</p>
                 <p>📱 +7 (999) 123-45-67</p>
-                <p>🕒 Работаем 24/7</p>
+                <p>
+                  💬 Техподдержка:
+                  <a
+                    href="https://t.me/YOUR_TELEGRAM_USERNAME"
+                    className="text-[#C41E3A] ml-2 hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    @YOUR_TELEGRAM_USERNAME
+                  </a>
+                </p>
               </div>
             </div>
             <div>
@@ -373,6 +900,7 @@ const Index = () => {
                 <p>• Доставка: 18-21 день</p>
                 <p>• Гарантия: 1 год</p>
                 <p>• Возврат: 14 дней</p>
+                <p>• Сравнение моделей</p>
               </div>
             </div>
           </div>
@@ -381,6 +909,9 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Compare Modal */}
+      {compareModalContent}
     </div>
   );
 };
